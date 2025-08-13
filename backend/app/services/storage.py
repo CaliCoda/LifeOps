@@ -1,8 +1,9 @@
 from sqlmodel import SQLModel, Field, Session, create_engine, select
-from typing import Optional, Generator, List, Dict, Any
+from typing import Optional, List, Dict, Any
 import os
 from datetime import datetime
 
+from contextlib import contextmanager
 from sqlalchemy import Column, JSON
 
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./lifeops.db")
@@ -30,9 +31,13 @@ def init_db() -> None:
     SQLModel.metadata.create_all(engine)
 
 
-def get_session() -> Generator[Session, None, None]:
+@contextmanager
+def get_session() -> Session:
     """
     Provide a transactional scope around a series of operations.
     """
-    with Session(engine) as session:
+    session = Session(engine)
+    try:
         yield session
+    finally:
+        session.close()
