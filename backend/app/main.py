@@ -16,3 +16,11 @@ app.include_router(health_router, prefix="/api/v1")
 
 from app.routes.actions import router as actions_router
 app.include_router(actions_router)
+
+from app.routes.inbox import router as inbox_router
+app.include_router(inbox_router)
+
+from app.services.storage import init_db
+@app.on_event('startup')
+def _startup():
+    init_db()
