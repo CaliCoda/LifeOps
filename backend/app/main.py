@@ -13,3 +13,6 @@ app.add_middleware(
 )
 
 app.include_router(health_router, prefix="/api/v1")
+
+from app.routes.actions import router as actions_router
+app.include_router(actions_router)
